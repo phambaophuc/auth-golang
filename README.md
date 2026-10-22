@@ -1,209 +1,155 @@
-# Authentication & Authorization System
+# 🔐 Auth-Golang: A Robust Authentication and Authorization System in Go
 
-The authentication and authorization system is built in Go, following SOLID principles and Clean Architecture.
+[![Go](https://img.shields.io/badge/Go-1.23.6-blue.svg)](https://golang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🏗️ Architecture
+This project provides a comprehensive authentication and authorization system built with Go, adhering to SOLID principles and Clean Architecture. It's designed to be a secure and scalable foundation for managing user identities and access control in your applications.
 
-The system is designed with Clean Architecture and consists of 4 main layers:
+## 📝 Table of Contents
 
-- **Domain Layer**: Entities, Repositories, Services interfaces
-- **Application Layer**: Business logic, DTOs, Use cases
-- **Infrastructure Layer**: Database, External services, Security
-- **Interface Layer**: HTTP handlers, Middleware, Routes
+*   [About the Project](#about-the-project)
+*   [Features](#features-)
+*   [Tech Stack](#tech-stack-)
+*   [Project Structure](#project-structure-)
+*   [Installation](#installation-)
+*   [Usage](#usage-)
+*   [SOLID Principles Applied](#solid-principles-applied-)
+*   [License](#license-)
+*   [Footer](#footer-)
 
-## 🚀 Features
+## ℹ️ About the Project
+
+The `auth-golang` project is a Go-based backend service focused on handling user authentication and authorization. It implements a layered architecture following Clean Architecture principles, ensuring maintainability, testability, and adherence to software design best practices.
+
+## ✨ Features
+
+This system offers a robust set of features for managing user authentication and authorization:
 
 ### Authentication
 
-- ✅ User registration
-- ✅ Login with email/password
-- ✅ JWT Access & Refresh tokens
-- ✅ Logout
-- ✅ Refresh token
+*   `✅` **User Registration**: Securely register new users with email and password.
+*   `✅` **Login**: Authenticate users using their email and password.
+*   `✅` **JWT Tokens**: Issue short-lived access tokens and long-lived refresh tokens for secure session management.
+*   `✅` **Token Refresh**: Seamlessly refresh access tokens using valid refresh tokens.
+*   `✅` **Logout**: Basic logout functionality (token blacklisting could be added for production).
 
 ### Authorization
 
-- ✅ Role-based access control (RBAC)
-- ✅ Permission-based authorization
-- ✅ Authentication middleware
-- ✅ Permission checking middleware
+*   `✅` **Role-Based Access Control (RBAC)**: Assign roles to users for group-level permissions.
+*   `✅` **Permission-Based Authorization**: Define fine-grained permissions for specific actions on resources.
+*   `✅` **Authentication Middleware**: Protect API endpoints requiring a valid access token.
+*   `✅` **Permission Middleware**: Enforce access control based on user roles and permissions.
 
 ### User Management
 
-- ✅ View user profile
-- ✅ Update personal information
-- ✅ Change password
-- ✅ Assign/Remove roles to users (Admin)
+*   `✅` **View User Profile**: Retrieve detailed user information.
+*   `✅` **Update Profile**: Allow users to update their first and last names.
+*   `✅` **Change Password**: Securely update a user's password.
+*   `✅` **Role Management (Admin)**: Admins can assign and remove roles from users.
 
-## 🛠️ Technologies Used
+## 🛠️ Tech Stack
 
-- **Framework**: Gin (HTTP router)
-- **Database**: PostgreSQL with GORM ORM
-- **Authentication**: JWT tokens
-- **Password Hashing**: bcrypt
-- **Config Management**: godotenv
+*   **Language**: Go (Golang)
+*   **Web Framework**: Gin (High-performance, minimalist web framework)
+*   **Database**: PostgreSQL (Relational database)
+*   **ORM**: GORM (Powerful Go ORM for PostgreSQL)
+*   **Authentication**: JWT (JSON Web Tokens)
+*   **Password Hashing**: bcrypt (Secure password hashing)
+*   **Configuration**: `godotenv` (Environment variable loading)
+*   **Dependencies**: Managed via Go Modules (`go.mod`)
 
 ## 📁 Project Structure
+
+The project follows a Clean Architecture approach, organizing code into logical layers:
 
 ```
 auth-system/
 ├── cmd/server/          # Application entry point
 ├── internal/
-│   ├── config/          # Configuration management
-│   ├── domain/          # Business entities & interfaces
-│   ├── application/     # Business logic & DTOs
-│   ├── infrastructure/  # External dependencies
-│   └── interfaces/      # HTTP handlers & routes
-├── pkg/                 # Reusable packages
-└── .env.example        # Environment template
+│   ├── config/          # Configuration management (env loading)
+│   ├── domain/          # Core business entities & interfaces (repositories, services)
+│   │   ├── entities/      # Data models (User, Role, Permission)
+│   │   ├── repositories/  # Repository interfaces
+│   │   └── services/      # Service interfaces
+│   ├── application/     # Application logic (use cases, DTOs, concrete services)
+│   │   ├── dto/           # Data Transfer Objects for API requests/responses
+│   │   └── services/      # Concrete service implementations
+│   ├── infrastructure/  # External dependencies and implementations
+│   │   ├── database/      # Database connection and migration logic
+│   │   └── security/      # Security implementations (JWT, Password hashing)
+│   └── interfaces/      # Presentation layer (HTTP handlers, middleware, routes)
+│       ├── handlers/      # HTTP request handlers
+│       ├── middleware/    # Request middleware (Auth, CORS, Permissions)
+│       └── routes/        # API route definitions
+├── pkg/                 # Reusable utility packages (errors, response helpers)
+└── .env.example        # Environment variable template
 ```
 
-## 🚀 Installation and Running
+## 🚀 Installation
 
-### 1. Clone repository
+Follow these steps to set up the project locally:
 
-```bash
-git clone <repository-url>
-cd auth-system
-```
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/phambaophuc/auth-golang.git
+    cd auth-golang
+    ```
 
-### 2. Install dependencies
+2.  **Install Go dependencies**:
+    ```bash
+    go mod download
+    ```
 
-```bash
-go mod download
-```
+3.  **Configure Environment Variables**:
+    *   Copy the example environment file:
+        ```bash
+        cp .env.example .env
+        ```
+    *   Edit the `.env` file and update the following settings:
+        *   **Database Configuration**: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_SSL_MODE`.
+        *   **JWT Configuration**: `JWT_SECRET`, `JWT_ACCESS_TTL`, `JWT_REFRESH_TTL` (ensure `JWT_SECRET` is strong and unique for production).
+        *   **Server Configuration**: `SERVER_PORT` (defaults to 8080).
 
-### 3. Configure the database
+4.  **Set up PostgreSQL Database**:
+    *   Ensure you have PostgreSQL installed and running.
+    *   Create the database specified in your `.env` file (e.g., `auth_db`).
+        ```bash
+        # Example using psql command line
+        createdb auth_db
+        ```
 
-```bash
-# Create database PostgreSQL
-createdb auth_db
+## ▶️ Usage
 
-# Copy and edit environment file
-cp .env.example .env
-# Update database info in .env file
-```
+### Running the Application
 
-### 4. Run the application
+Once dependencies are installed and the environment is configured, start the server:
 
 ```bash
 go run cmd/server/main.go
 ```
 
-The server will run on port 8080 (or the port configured in .env).
+The application will start and listen on the configured `SERVER_PORT` (default is 8080).
 
-## 📚 API Documentation
+### Real-world Use Cases
 
-### Authentication Endpoints
+This authentication and authorization system is suitable for:
 
-#### POST /api/v1/auth/register
+*   **Microservices Backend**: Providing a centralized authentication and authorization service for multiple microservices.
+*   **Web Applications**: Securing user accounts and controlling access to different parts of a web application.
+*   **Mobile App Backends**: Managing user authentication and API access for mobile clients.
+*   **Internal Tools**: Restricting access to sensitive internal company resources.
 
-Register a new user
+## 🔑 How to Use
 
-```json
-{
-  "email": "user@example.com",
-  "password": "password123",
-  "first_name": "John",
-  "last_name": "Doe"
-}
-```
+1.  **Authentication**: Users first register or log in to obtain JWT tokens.
+2.  **Authorization**: Access protected endpoints by including the `Authorization` header with the Bearer token.
+3.  **Admin Actions**: Administrative tasks like role assignment require specific permissions, enforced by middleware.
 
-#### POST /api/v1/auth/login
+## 🧪 Testing with `curl`
 
-Login
+Here are examples of how to interact with the API using `curl`:
 
-```json
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
-```
-
-#### POST /api/v1/auth/refresh
-
-Refresh token
-
-```json
-{
-  "refresh_token": "your_refresh_token_here"
-}
-```
-
-#### POST /api/v1/auth/logout
-
-Logout (requires authentication)
-
-### User Endpoints
-
-#### GET /api/v1/user/profile
-
-Get user profile (requires authentication)
-
-#### PUT /api/v1/user/profile
-
-Update profile (requires authentication)
-
-```json
-{
-  "first_name": "John",
-  "last_name": "Doe"
-}
-```
-
-#### POST /api/v1/user/change-password
-
-Change password (requires authentication)
-
-```json
-{
-  "current_password": "old_password",
-  "new_password": "new_password123"
-}
-```
-
-### Admin Endpoints
-
-#### POST /api/v1/admin/users/:id/roles
-
-Assign a role to a user (requires "users.write" permission)
-
-```json
-{
-  "role_id": 1
-}
-```
-
-#### DELETE /api/v1/admin/users/:id/roles/:roleId
-
-Remove a role from a user (requires "users.write" permission)
-
-## 🔐 Authentication & Authorization
-
-### JWT Tokens
-
-- **Access Token**: Short-lived (15 minutes), used to authenticate API calls
-- **Refresh Token**: Long-lived (7 days), used to get new access tokens
-
-### Headers
-
-To access protected endpoints, add this header:
-
-```
-Authorization: Bearer <your_access_token>
-```
-
-### Default Roles & Permissions
-
-The system automatically creates:
-
-- **Role "admin"**: Full permissions
-- **Role "user"**: Read-only access to user info
-- **Permissions**: users.read, users.write, users.delete, roles.read, roles.write, roles.delete
-
-## 🧪 Testing with curl
-
-#### Register
+#### Register a new user:
 
 ```bash
 curl -X POST http://localhost:8080/api/v1/auth/register \
@@ -216,7 +162,7 @@ curl -X POST http://localhost:8080/api/v1/auth/register \
   }'
 ```
 
-#### Login
+#### Log in a user:
 
 ```bash
 curl -X POST http://localhost:8080/api/v1/auth/login \
@@ -227,21 +173,37 @@ curl -X POST http://localhost:8080/api/v1/auth/login \
   }'
 ```
 
-#### Get Profile (with token)
+#### Get user profile (requires a valid access token):
 
 ```bash
 curl -X GET http://localhost:8080/api/v1/user/profile \
   -H "Authorization: Bearer <your_access_token>"
 ```
 
-## 🔧 Applied SOLID Principles
+## 🔧 SOLID Principles Applied
 
-1. **Single Responsibility**: Each struct/package has a single responsibility
-2. **Open/Closed**: Use interfaces to extend functionality
-3. **Liskov Substitution**: Implementations can substitute their interfaces
-4. **Interface Segregation**: Small and focused interfaces
-5. **Dependency Inversion**: High-level modules do not depend on low-level modules
+This project is built with SOLID principles in mind:
 
-## 📝 License
+1.  **Single Responsibility Principle (SRP)**: Each struct and package has a single, well-defined responsibility.
+2.  **Open/Closed Principle (OCP)**: Interfaces are used extensively, allowing for extension of functionality without modifying existing code.
+3.  **Liskov Substitution Principle (LSP)**: Implementations of interfaces can be substituted for their interface types without altering the correctness of the program.
+4.  **Interface Segregation Principle (ISP)**: Interfaces are kept small and focused, ensuring clients only depend on methods they need.
+5.  **Dependency Inversion Principle (DIP)**: High-level modules do not depend on low-level modules; both depend on abstractions.
 
-MIT License
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## 🌟 Footer
+
+--- 
+
+**auth-golang** | [phambaophuc/auth-golang](https://github.com/phambaophuc/auth-golang) 
+
+*   Author: [Phambaophuc](https://github.com/phambaophuc)
+*   Contact: phambaophuc@gmail.com
+
+If you find this project useful, please consider giving it a star ⭐, forking it 🍴, or opening an issue to report bugs or suggest improvements.
+
+
+---
