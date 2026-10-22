@@ -201,7 +201,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 **auth-golang** | [phambaophuc/auth-golang](https://github.com/phambaophuc/auth-golang) 
 
 *   Author: [Phambaophuc](https://github.com/phambaophuc)
-*   Contact: phambaophuc@gmail.com
 
 If you find this project useful, please consider giving it a star ⭐, forking it 🍴, or opening an issue to report bugs or suggest improvements.
 
